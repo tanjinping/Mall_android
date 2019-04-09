@@ -5,14 +5,15 @@ import {width} from "../utils/helps";
 
 class Banner extends Component {
     render() {
+        const {name, image} = commodity[0]
         return (
             <View style={styles.banner}>
                 <View style={styles.banner_title}>
                     <Image source={require('../image/line-red.png')} style={styles.banner_line}/>
-                    <Text>春季推荐</Text>
+                    <Text>{name}</Text>
                     <Image source={require('../image/line-red.png')} style={styles.banner_line}/>
                 </View>
-                <Image source={{uri: commodity[0].image}} style={styles.banner_commodity}/>
+                <Image source={{uri: image}} style={styles.banner_commodity}/>
                 <Image source={require('../image/discount.png')} style={styles.banner_price}/>
             </View>
         );
@@ -33,15 +34,16 @@ class Title extends Component {
 
 class Commodity extends Component {
     render() {
+        const {image, name, price} = this.props.commodity.item
         return (
             <View style={styles.one}>
-                <View></View>
+                <Image source={{uri: image}} style={{height: width * 42 / 100, width: width * 42 / 100}}/>
                 <View>
-                    <View></View>
-                    <View>
-                        <View></View>
-                        <View></View>
-                        <View></View>
+                    <Text style={{fontSize: 18}}>{name}</Text>
+                    <View style={styles.one_bottom}>
+                        <Text style={styles.commodity_money}>￥</Text>
+                        <Text style={{fontSize: 15}}>{price}</Text>
+                        <Text style={styles.commodity_add}>+</Text>
                     </View>
                 </View>
             </View>
@@ -57,11 +59,11 @@ class Home extends Component {
                 <Banner/>
                 <Title/>
                 <FlatList
-                    style={styles.commodity}
                     data={commodity}
                     numColumns={2}
+                    keyExtractor={(item) => item._id}
                     renderItem={(item) =>
-                        <Commodity/>
+                        <Commodity commodity={item}/>
                     }
                 />
             </ScrollView>
@@ -74,15 +76,14 @@ const styles = StyleSheet.create({
         height: width / 750 * 254,
         width: '100%'
     },
-    commodity: {
-        // justifyContent: 'space-around'
+    one_bottom: {
+        flexDirection: 'row',
     },
     one: {
         height: 200,
         width: '42%',
         backgroundColor: '#fff',
-        margin: '4%'
-
+        margin: '4%',
     },
     banner_line: {
         height: 23.8,
@@ -95,10 +96,26 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: 15,
     },
+    commodity_money: {
+        fontSize: 15,
+        height: 20,
+        width: 20,
+        backgroundColor: '#FFD700',
+        borderRadius: 50,
+        textAlign: 'center'
+    },
+    commodity_add: {
+        fontSize: 15,
+        height: 20,
+        width: 20,
+        backgroundColor: '#FFD700',
+        borderRadius: 50,
+        textAlign: 'center',
+        marginLeft: 'auto'
+    },
     banner_commodity: {
         height: 100,
         width: 100,
-        // position: 'absolute'
         alignSelf: 'flex-end',
         right: 15,
     },
