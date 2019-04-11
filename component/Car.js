@@ -187,7 +187,7 @@ class Car extends Component {
 
     render() {
         return (
-            <View style={{width: width, height: height - 50}}>
+            <View style={{width: width, height: height - 50, backgroundColor: '#f1f1f1'}}>
                 <Car_top all_select={this.state.all_select}
                          edit={this.edit.bind(this)}
                          all_select_click={this.all_select.bind(this)}/>

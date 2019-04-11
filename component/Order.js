@@ -42,7 +42,7 @@ class Order_one extends Component {
 class Order extends Component {
     render() {
         return (
-            <ScrollView>
+            <ScrollView style={{backgroundColor:'#f1f1f1'}}>
                 <FlatList
                     data={order}
                     keyExtractor={(item, index) => index + ''}

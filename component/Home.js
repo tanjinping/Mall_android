@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, Image, FlatList, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, Image, FlatList, TouchableOpacity, ScrollView} from 'react-native';
 import {commodity} from '../utils/data';
 import {width} from "../utils/helps";
 
 class Banner extends Component {
     render() {
-        const {name, image} = commodity[0]
+        const {name, image} = commodity[0];
         return (
             <View style={styles.banner}>
                 <View style={styles.banner_title}>
@@ -32,12 +32,17 @@ class Title extends Component {
     }
 }
 
-class Commodity extends Component {
+class CommodityList extends Component {
     render() {
-        const {image, name, price} = this.props.commodity.item
+        const {image, name, price} = this.props.commodity.item;
+        const commodity = this.props.commodity;
         return (
             <View style={styles.one}>
-                <Image source={{uri: image}} style={{height: width * 42 / 100, width: width * 42 / 100}}/>
+                <TouchableOpacity onPress={() => {
+                    this.props.navigation.navigate('Commodity', {commodity})
+                }}>
+                    <Image source={{uri: image}} style={{height: width * 42 / 100, width: width * 42 / 100}}/>
+                </TouchableOpacity>
                 <View>
                     <Text style={{fontSize: 18}}>{name}</Text>
                     <View style={styles.one_bottom}>
@@ -47,14 +52,14 @@ class Commodity extends Component {
                     </View>
                 </View>
             </View>
-        );
+        )
     }
 }
 
 class Home extends Component {
     render() {
         return (
-            <ScrollView>
+            <ScrollView style={{backgroundColor: '#f1f1f1'}}>
                 <Image source={require('../image/bg.png')} style={styles.bg_top}/>
                 <Banner/>
                 <Title/>
@@ -63,7 +68,9 @@ class Home extends Component {
                     numColumns={2}
                     keyExtractor={(item) => item._id}
                     renderItem={(item) =>
-                        <Commodity commodity={item}/>
+                        <CommodityList commodity={item}
+                                       navigation={this.props.navigation}
+                        />
                     }
                 />
             </ScrollView>

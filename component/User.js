@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import {Image, Text, View, StyleSheet} from 'react-native';
+import {Image, Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import {width} from "../utils/helps";
+import Address from "./Address";
 
 class Banner extends Component {
     render() {
@@ -17,18 +18,20 @@ class Banner extends Component {
 class User extends Component {
     render() {
         return (
-            <View>
+            <View style={{backgroundColor: '#f1f1f1'}}>
                 <Image source={require('../image/bg.png')} style={styles.bg_top}/>
                 <Banner/>
-                <View style={styles.div}>
+                <TouchableOpacity style={styles.div} onPress={() => {
+                    this.props.navigation.navigate('Address')
+                }}>
                     <Text>收货地址</Text>
                     <Text>></Text>
-                </View>
+                </TouchableOpacity>
                 <View style={styles.hr}/>
-                <View style={styles.div}>
+                <TouchableOpacity style={styles.div}>
                     <Text>联系客服</Text>
                     <Text>></Text>
-                </View>
+                </TouchableOpacity>
             </View>
         );
     }
@@ -49,7 +52,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     hr: {
-        borderWidth: 0.3,
+        borderWidth: 0.2,
         borderColor: 'gray',
         width: '90%',
         left: '5%',
