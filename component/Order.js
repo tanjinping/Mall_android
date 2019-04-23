@@ -1,6 +1,15 @@
 import React, {Component} from 'react';
-import {Text, Image, View, FlatList, ScrollView, StyleSheet} from 'react-native';
-import {order} from "../utils/data";
+import {
+    Text,
+    Image,
+    View,
+    TouchableOpacity,
+    StyleSheet,
+    RefreshControl,
+    ActivityIndicator,
+    SwipeableFlatList
+} from 'react-native';
+import {commodity, order} from "../utils/data";
 
 class Order_view extends Component {
     render() {
@@ -40,21 +49,80 @@ class Order_one extends Component {
 }
 
 class Order extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isLoading: false,
+            nums: order
+        }
+    }
+
+    loadData(value) {
+        value && this.setState({isLoading: true});
+        if (value) {
+            setTimeout(() => {
+                this.setState({
+                    nums: this.state.nums.reverse(),
+                    isLoading: false
+                })
+            }, 2000)
+        } else {
+            setTimeout(() => {
+                this.setState({
+                    nums: this.state.nums.concat(order),
+                })
+            }, 2000)
+        }
+    }
+
     render() {
         return (
-            <ScrollView style={{backgroundColor:'#f1f1f1'}}>
-                <FlatList
-                    data={order}
-                    keyExtractor={(item, index) => index + ''}
-                    renderItem={(item) => <Order_one order={item}/>
-                    }
-                />
-            </ScrollView>
+            <SwipeableFlatList
+                refreshControl={
+                    <RefreshControl
+                        refreshing={this.state.isLoading}
+                        onRefresh={this.loadData.bind(this, true)}
+                    />
+                }
+                ListFooterComponent={() =>
+                    <View>
+                        <ActivityIndicator
+                            size={'large'}
+                            animating={true}
+                        />
+                        <Text style={{textAlign: 'center'}}>正在加载更多内容</Text>
+                    </View>
+                }
+                onEndReached={this.loadData.bind(this, false)}
+                renderQuickActions={() =>
+                    <View style={styles.delete}>
+                        <TouchableOpacity onPress={()=>alert('确定删除？')}>
+                            <Text>删除</Text>
+                        </TouchableOpacity>
+                    </View>}
+                maxSwipeDistance={100}
+                style={{backgroundColor: '#f1f1f1'}}
+                data={this.state.nums}
+                keyExtractor={(item, index) => index + ''}
+                renderItem={(item) => <Order_one order={item}/>
+                }
+            />
         );
     }
 }
 
 const styles = StyleSheet.create({
+    delete: {
+        height: '90%',
+        width: '90%',
+        backgroundColor: 'red',
+        position: 'relative',
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        top: '3%',
+        left: '10%'
+    },
     order_view_one: {
         backgroundColor: '#fff',
         height: 110,

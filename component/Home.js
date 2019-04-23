@@ -1,5 +1,14 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, Image, FlatList, TouchableOpacity, ScrollView} from 'react-native';
+import {
+    View,
+    Text,
+    StyleSheet,
+    Image,
+    FlatList,
+    TouchableOpacity,
+    RefreshControl,
+    ActivityIndicator
+} from 'react-native';
 import {commodity} from '../utils/data';
 import {width} from "../utils/helps";
 
@@ -23,7 +32,7 @@ class Banner extends Component {
 class Title extends Component {
     render() {
         return (
-            <View style={styles.title}>
+            <View style={styles.title_name}>
                 <Image source={require('../image/line-black.png')} style={styles.line}/>
                 <Text>春季推荐</Text>
                 <Image source={require('../image/line-black.png')} style={styles.line}/>
@@ -57,23 +66,70 @@ class CommodityList extends Component {
 }
 
 class Home extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isLoading: false,
+            nums: commodity
+        }
+    }
+
+    gen = () => <View>
+        <ActivityIndicator
+            size={'large'}
+            animating={true}
+        />
+        <Text>正在加载更多内容</Text>
+    </View>
+
+    loadData(value) {
+        value && this.setState({isLoading: true});
+        if (value) {
+            setTimeout(() => {
+                this.setState({
+                    nums: this.state.nums.reverse(),
+                    isLoading: false
+                })
+            }, 2000)
+        } else {
+            setTimeout(() => {
+                this.setState({
+                    nums: this.state.nums.concat(commodity),
+                })
+            }, 2000)
+        }
+    }
+
     render() {
         return (
-            <ScrollView style={{backgroundColor: '#f1f1f1'}}>
-                <Image source={require('../image/bg.png')} style={styles.bg_top}/>
-                <Banner/>
-                <Title/>
-                <FlatList
-                    data={commodity}
-                    numColumns={2}
-                    keyExtractor={(item) => item._id}
-                    renderItem={(item) =>
-                        <CommodityList commodity={item}
-                                       navigation={this.props.navigation}
-                        />
-                    }
-                />
-            </ScrollView>
+            <FlatList
+                refreshControl={
+                    <RefreshControl
+                        colors={['red']}
+                        title={'123'}
+                        refreshing={this.state.isLoading}
+                        onRefresh={this.loadData.bind(this, true)}
+                    />
+                }
+                ListHeaderComponent={() =>
+                    <View>
+                        <Image source={require('../image/bg.png')} style={styles.bg_top}/>
+                        <Banner/>
+                        <Title/>
+                    </View>}
+                ListFooterComponent={
+                    () => this.gen()
+                }
+                onEndReached={this.loadData.bind(this, false)}
+                data={this.state.nums}
+                numColumns={2}
+                keyExtractor={(item) => item._id}
+                renderItem={(item) =>
+                    <CommodityList commodity={item}
+                                   navigation={this.props.navigation}
+                    />
+                }
+            />
         );
     }
 }
@@ -139,7 +195,7 @@ const styles = StyleSheet.create({
         left: '5%',
         backgroundColor: '#fff',
     },
-    title: {
+    title_name: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center'
